@@ -1,0 +1,25 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+namespace: monitoring
+
+resources:
+  - rbac.yaml
+  - statefulset.yaml
+  - service.yaml
+
+configMapGenerator:
+  - files:
+      - "config.yaml"
+    name: config
+  - files:
+      - "prometheus-scrape-config-files/tke/cadvisor-on-tke.yaml"
+      - "prometheus-scrape-config-files/tke/kubelet-on-tke.yaml"
+      - "prometheus-scrape-config-files/tke/node-exporter-on-tke.yaml"
+      - "prometheus-scrape-config-files/tke/probes-on-tke.yaml"
+      - "prometheus-scrape-config-files/tke/serverless-pod-on-standard-cluster.yaml"
+      - "prometheus-scrape-config-files/kube-state-metrics.yaml"
+      - "prometheus-scrape-config-files/kubernetes-pods.yaml"
+      - "prometheus-scrape-config-files/kubernetes-service-endpoints.yaml"
+      - "prometheus-scrape-config-files/kubernetes-services-probe.yaml"
+    name: scrape-config
