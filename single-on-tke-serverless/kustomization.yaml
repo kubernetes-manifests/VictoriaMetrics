@@ -11,7 +11,7 @@ resources:
 configMapGenerator:
   - files:
       - "config.yaml"
-    name: config
+    name: prom-config
   - files:
       - "prometheus-scrape-config-files/tke/serverless-pod-on-serverless-cluster.yaml"
       - "prometheus-scrape-config-files/kube-state-metrics.yaml"

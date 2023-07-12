@@ -72,7 +72,7 @@ spec:
       - configMap:
           defaultMode: 420
           name: config
-        name: config
+        name: prom-config
   updateStrategy:
     rollingUpdate:
       partition: 0

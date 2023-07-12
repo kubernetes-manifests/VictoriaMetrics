@@ -11,7 +11,7 @@ resources:
 configMapGenerator:
   - files:
       - "config.yaml"
-    name: config
+    name: prom-config
   - files:
       - "prometheus-scrape-config-files/tke/cadvisor-on-tke.yaml"
       - "prometheus-scrape-config-files/tke/kubelet-on-tke.yaml"

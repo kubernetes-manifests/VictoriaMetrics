@@ -71,7 +71,7 @@ spec:
         name: scrapeconfig
       - configMap:
           defaultMode: 420
-          name: config
+          name: prom-config
         name: config
   updateStrategy:
     rollingUpdate:
