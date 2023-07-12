@@ -2,3 +2,7 @@
 	path = single-on-tke/prometheus-scrape-config-files
 	url = https://github.com/kubernetes-manifests/prometheus-scrape-config-files
 	branch = main
+[submodule "single-on-tke-serverless/prometheus-scrape-config-files"]
+	path = single-on-tke-serverless/prometheus-scrape-config-files
+	url = https://github.com/kubernetes-manifests/prometheus-scrape-config-files
+	branch = main

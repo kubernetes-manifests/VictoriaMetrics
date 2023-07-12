@@ -1,0 +1,91 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  labels:
+    app: victoria
+  name: victoria
+  namespace: monitoring
+spec:
+  podManagementPolicy: OrderedReady
+  replicas: 1
+  selector:
+    matchLabels:
+      app: victoria
+  serviceName: victoria
+  template:
+    metadata:
+      labels:
+        app: victoria
+    spec:
+      automountServiceAccountToken: true
+      containers:
+      - args:
+        - --retentionPeriod=14d
+        - --storageDataPath=/storage
+        - -promscrape.config=/config/config.yaml
+        - -promscrape.suppressDuplicateScrapeTargetErrors
+        - --envflag.enable=true
+        - --envflag.prefix=VM_
+        - --loggerFormat=json
+        image: victoriametrics/victoria-metrics:v1.91.3
+        imagePullPolicy: IfNotPresent
+        livenessProbe:
+          failureThreshold: 10
+          httpGet:
+            path: /health
+            port: 8428
+            scheme: HTTP
+          initialDelaySeconds: 30
+          periodSeconds: 30
+          successThreshold: 1
+          timeoutSeconds: 5
+        name: victoria
+        ports:
+        - containerPort: 8428
+          name: http
+          protocol: TCP
+        readinessProbe:
+          failureThreshold: 3
+          httpGet:
+            path: /health
+            port: http
+            scheme: HTTP
+          initialDelaySeconds: 5
+          periodSeconds: 15
+          successThreshold: 1
+          timeoutSeconds: 5
+        volumeMounts:
+        - mountPath: /storage
+          name: server-volume
+        - mountPath: /scrapeconfig
+          name: scrapeconfig
+        - mountPath: /config
+          name: config
+      dnsPolicy: ClusterFirst
+      restartPolicy: Always
+      serviceAccountName: victoria
+      volumes:
+      - configMap:
+          defaultMode: 420
+          name: scrape-config
+        name: scrapeconfig
+      - configMap:
+          defaultMode: 420
+          name: config
+        name: config
+  updateStrategy:
+    rollingUpdate:
+      partition: 0
+    type: RollingUpdate
+  volumeClaimTemplates:
+  - apiVersion: v1
+    kind: PersistentVolumeClaim
+    metadata:
+      name: server-volume
+    spec:
+      accessModes:
+      - ReadWriteOnce
+      resources:
+        requests:
+          storage: 10Gi
+      volumeMode: Filesystem
